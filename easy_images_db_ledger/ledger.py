@@ -39,10 +39,11 @@ class DBLedger(BaseLedger):
                 json_dict[pk] = models.meta_json(meta, date)
         return [json_dict.get(image_hash) for image_hash in hashes]
 
-    def save(self, source_path, opts, meta, **kwargs):
+    def save(self, source_path, opts, **kwargs):
         """
         Save a reference of a processed image to the database.
         """
+        meta = self.meta(source_path, opts) or {}
         image_hash = kwargs.get('image_hash')
         if image_hash is None:
             image_hash = self.hash(source_path, opts)

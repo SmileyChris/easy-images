@@ -59,13 +59,14 @@ class BaseLedger(object):
         return filename_fmt.format(info=self.filename_info_class(
             source_path=source_path, opts=opts, ledger=self, **kwargs))
 
-    def output_extension(self, opts, source_ext, meta=None, **kwargs):
+    def output_extension(
+            self, source_path, opts, source_ext, meta=None, **kwargs):
         """
         The generated filename extension (including the ``.``).
         """
         if meta is None:
-            meta = self.meta(opts)
-        if meta.get('transparent'):
+            meta = self.meta(source_path, opts)
+        if meta and meta.get('transparent'):
             return '.png'
         return '.jpg'
 
