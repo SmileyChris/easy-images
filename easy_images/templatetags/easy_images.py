@@ -62,7 +62,7 @@ def _build_opts(args, parser):
             continue
         dimensions = re_dimensions.match(str_value)
         if dimensions:
-            value = (int(part) for part in dimensions.groups())
+            value = [int(part) for part in dimensions.groups()]
         yield key, value
 
 

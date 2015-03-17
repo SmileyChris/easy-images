@@ -9,7 +9,7 @@ from PIL import Image
 
 class PILOutput(object):
 
-    def save(self, image, filename, destination=None, **options):
+    def write_image(self, image, filename, destination=None, **options):
         """
         Save a PIL image.
         """
