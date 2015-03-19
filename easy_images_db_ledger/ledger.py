@@ -16,8 +16,10 @@ class DBLedger(BaseLedger):
         if image_hash is None:
             image_hash = self.hash(source_path, opts)
         try:
-            image = models.ProcessedImage.objects.get(pk=image_hash)
-        except models.ProcessedImage.DoesNotExist:
+            image = (
+                models.ProcessedImage.objects.filter(pk=image_hash)
+                .only('meta', 'created'))[0]
+        except IndexError:
             return None
         return image.meta_json
 

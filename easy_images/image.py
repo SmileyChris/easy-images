@@ -24,14 +24,15 @@ class EasyImage(object):
         The filename for this image.
         """
         return self.ledger.build_filename(
-            source_path=self.source_path, opts=self.opts)
+            source_path=self.source_path, opts=self.opts, meta=self.meta)
 
     @property
     def hash(self):
         """
         A hash representing this combination of source image and options.
         """
-        return self.ledger.hash(source_path=self.source_path, opts=self.opts)
+        return self.ledger.get_filename_info(
+            source_path=self.source_path, opts=self.opts).hash
 
     @property
     def processing(self):
@@ -241,8 +242,8 @@ class EasyImageBatch(object):
             if not force:
                 if processing or image.meta is not None:
                     continue
-            all_opts = actions.setdefault(image.source_path, [])
-            all_opts.append(image.opts)
+            all_opts = actions.setdefault(image.source_path, {})
+            all_opts[image.name] = image.opts
         for source_path, all_opts in six.iteritems(actions):
             self.engine.add({'source': source_path, 'all_opts': all_opts})
 
@@ -250,7 +251,9 @@ class EasyImageBatch(object):
 def annotate(obj_list, opts_map, get_source, batch=None):
     if not callable(get_source):
         source_attr = get_source
-        get_source = lambda obj: getattr(obj, source_attr)
+
+        def get_source(obj):
+            return getattr(obj, source_attr)
 
     generate = batch is None
     if generate:

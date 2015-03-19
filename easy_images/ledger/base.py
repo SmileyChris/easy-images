@@ -43,10 +43,12 @@ class BaseLedger(object):
         """
         return [self.meta(*args) for args in sources]
 
-    def hash(self, source_path, opts, **kwargs):
-        info = self.filename_info_class(
-            source_path=source_path, opts=opts, ledger=self)
-        return info.hash
+    def get_filename_info(self, source_path, opts, **kwargs):
+        info = kwargs.get('filename_info')
+        if info is not None:
+            return info
+        return self.filename_info_class(
+            source_path=source_path, opts=opts, ledger=self, **kwargs)
 
     def build_filename(self, source_path, opts, **kwargs):
         """
@@ -56,8 +58,9 @@ class BaseLedger(object):
         falling back to the default format coming from :attr:`filename`.
         """
         filename_fmt = opts.get('FILENAME') or self.filename
-        return filename_fmt.format(info=self.filename_info_class(
-            source_path=source_path, opts=opts, ledger=self, **kwargs))
+        info = self.get_filename_info(
+            source_path=source_path, opts=opts, **kwargs)
+        return filename_fmt.format(info=info)
 
     def output_extension(
             self, source_path, opts, source_ext, meta=None, **kwargs):

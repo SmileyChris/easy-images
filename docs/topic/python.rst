@@ -81,4 +81,4 @@ each object) or a callable that accepts the object and returns the source.
 For example::
 
     >>> from easy_images.image import annotate
-    >>> annotate(some_queryset, opts_map, 'person')
+    >>> annotate(person_queryset, opts_map, 'profile_photo')
