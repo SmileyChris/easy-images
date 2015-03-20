@@ -53,13 +53,21 @@ class BaseEngine(object):
         images = self.generate(action)
         source_path = action['source']
         for output_target, opts in action['all_opts'].items():
-            self.record(source_path, opts, ledger)
+            image = images.get(output_target) if images else None
+            self.record(source_path, opts, ledger, image)
         return images
 
-    def record(self, source_path, opts, ledger):
+    def record(self, source_path, opts, ledger, image):
         if not opts.get('KEY'):
             return
-        return ledger.save(source_path, opts)
+        meta = self.build_meta(image)
+        return ledger.save(source_path, opts, meta)
+
+    @abc.abstractmethod
+    def build_meta(self, image):
+        """
+        Build a dictionary of metadata for an image.
+        """
 
     def processing(self, key, **kwargs):
         """

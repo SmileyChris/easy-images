@@ -46,7 +46,6 @@ class DBLedger(BaseLedger):
         """
         Save a reference of a processed image to the database.
         """
-        meta = {}
         image_hash = kwargs.get('image_hash')
         if image_hash is None:
             image_hash = self.get_filename_info(source_path, opts).hash
